@@ -22,6 +22,8 @@ import { CardWrapper } from './CardWrapper'
 import { RegisterSchema } from '@/schemas/auth'
 import { MailIcon } from 'lucide-react'
 import { PasswordInput } from './PasswordInput'
+import { Checkbox } from '../ui/checkbox'
+import Link from 'next/link'
 
 export const RegisterForm = () => {
   const [isPending, startTransition] = useTransition()
@@ -34,6 +36,7 @@ export const RegisterForm = () => {
       email: '',
       password: '',
       confirmPassword: '',
+      agreedTerms: false,
     },
   })
 
@@ -137,6 +140,32 @@ export const RegisterForm = () => {
                   </FormControl>
 
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="agreedTerms"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-end space-x-3 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      className=""
+                      name="agreedTerms"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    >
+                      I Accept The <Link href="/terms">Terms</Link>
+                    </Checkbox>
+                  </FormControl>
+                  <FormLabel>
+                    I Accept the{' '}
+                    <Link href="/">
+                      <span className="text-blue-600">
+                        Terms and Conditions
+                      </span>
+                    </Link>
+                  </FormLabel>
                 </FormItem>
               )}
             />
