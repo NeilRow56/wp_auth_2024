@@ -29,7 +29,7 @@ export default function Home() {
 
           <div className="mx-auto mt-10 flex max-w-sm justify-center">
             <Button asChild>
-              <Link href="/sign-up">Sign in</Link>
+              <Link href="/auth/sign-up">Sign in</Link>
             </Button>
           </div>
         </div>
