@@ -13,14 +13,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+ ADMIN
+ USER
+}
+
 model User {
  id              String @id @default(auto()) @map("_id") @db.ObjectId
- name            String?
+ firstName       String
+ lastName        String 
  bio             String?
- website         String?
+ website         String? 
  gender          String?
  email           String   @unique 
+ active          Boolean  @default(false)
+ emailVerified   DateTime?
  imageUrl        String? 
+ password        String
+ role            UserRole @default(USER)
  colorScheme     String        @default("theme-orange")
  Subscription    Subscription []
  Notes           Note[]
@@ -30,7 +40,10 @@ model User {
  saved         SavedPost[]
  likes         Like[]
  comments      Comment[]
- followers    Follower[]   
+ followers     Follower[] 
+ accounts      Account[]
+ sessions      Session[]
+ activateToken     ActivateToken[]
  
  
 
@@ -81,6 +94,44 @@ model Post {
     userId String @db.ObjectId
 
     @@index([userId])
+}
+
+model ActivateToken {
+    id         String @id @default(auto()) @map("_id") @db.ObjectId
+    identifier String
+    token      String   @unique
+    activatedAt DateTime?
+    
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    userId String @db.ObjectId
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    
+}
+
+model Session {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String  @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+ id String @id @default(auto()) @map("_id") @db.ObjectId
+ userId             String   @db.ObjectId
+ type               String
+ provider           String
+ providerAccountId  String
+ refresh_token      String?  @db.String
+ access_token       String?  @db.String
+ expires_at         Int?
+ token_type         String?
+ scope              String?
+ id_token           String?  @db.String
+ session_state      String?
+ user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ @@unique([provider, providerAccountId])
 }
 
 model SavedPost {
