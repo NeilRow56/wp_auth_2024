@@ -18,8 +18,10 @@ import {
 
 import { Button } from '../ui/button'
 
-import { CardWrapper } from './CarWrapper'
+import { CardWrapper } from './CardWrapper'
 import { RegisterSchema } from '@/schemas/auth'
+import { MailIcon } from 'lucide-react'
+import { PasswordInput } from './PasswordInput'
 
 export const RegisterForm = () => {
   const [isPending, startTransition] = useTransition()
@@ -27,10 +29,11 @@ export const RegisterForm = () => {
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
-      name: '',
-      username: '',
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
+      confirmPassword: '',
     },
   })
 
@@ -45,19 +48,22 @@ export const RegisterForm = () => {
       backButtonHref="/auth/sign-in"
     >
       <Form {...form}>
-        <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
-          <div className=" space-y-4">
+        <form
+          className="gap-3 space-y-6"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
+          <div className=" grid gap-3  sm:grid-cols-2">
             <FormField
               control={form.control}
-              name="name"
+              name="firstName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex w-full">Name</FormLabel>
+                  <FormLabel className="flex w-full">First Name</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       disabled={isPending}
-                      placeholder="John Doe"
+                      placeholder="John "
                     />
                   </FormControl>
                   <FormMessage />
@@ -66,21 +72,19 @@ export const RegisterForm = () => {
             />
             <FormField
               control={form.control}
-              name="username"
+              name="lastName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex w-full">Username</FormLabel>
+                  <FormLabel className="flex w-full">Last Name</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      placeholder="JohnDoe56"
-                    />
+                    <Input {...field} disabled={isPending} placeholder="Doe" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+          </div>
+          <div className="space-y-6">
             <FormField
               control={form.control}
               name="email"
@@ -93,6 +97,7 @@ export const RegisterForm = () => {
                       disabled={isPending}
                       placeholder="john.doe@example.com"
                       type="email"
+                      suffix={<MailIcon />}
                     />
                   </FormControl>
                   <FormMessage />
@@ -105,6 +110,23 @@ export const RegisterForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex w-full">Password</FormLabel>
+                  <FormControl>
+                    <PasswordInput {...field} placeholder="password" />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex w-full">
+                    {' '}
+                    Confirm Password
+                  </FormLabel>
                   <FormControl>
                     <Input
                       disabled={isPending}
@@ -119,7 +141,6 @@ export const RegisterForm = () => {
               )}
             />
           </div>
-
           <Button disabled={isPending} type="submit" className="w-full">
             Register
           </Button>

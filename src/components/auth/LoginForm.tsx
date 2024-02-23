@@ -15,7 +15,7 @@ import {
 
 import { Button } from '../ui/button'
 
-import { CardWrapper } from './CarWrapper'
+import { CardWrapper } from './CardWrapper'
 import { LoginSchema } from '@/schemas/auth'
 
 export const LoginForm = () => {
