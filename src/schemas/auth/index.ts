@@ -36,8 +36,11 @@ export const RegisterSchema = z
       .min(2, { message: 'Last Name must be at least 2 characters' })
       .max(45, { message: 'Last Name must be less than 45 characters' })
       .regex(new RegExp('^[a-zA-Z]+$'), 'No special character allowed!'),
-
-    agreedTerms: z.coerce.boolean().optional(),
+    accepted: z.literal(true, {
+      errorMap: () => ({
+        message: 'Please accept all terms',
+      }),
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Password and confirm password doesn't match!",

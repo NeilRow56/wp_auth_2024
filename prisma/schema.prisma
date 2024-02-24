@@ -30,7 +30,7 @@ model User {
  emailVerified   DateTime?
  imageUrl        String? 
  password        String
- agreedTerms     Boolean @default(false)
+//  agreedTerms     Boolean @default(false)
  role            UserRole @default(USER)
  colorScheme     String        @default("theme-orange")
  Subscription    Subscription []
