@@ -166,6 +166,7 @@ export const RegisterForm = () => {
                       </span>
                     </Link>
                   </FormLabel>
+                  <FormMessage />
                 </FormItem>
               )}
             />

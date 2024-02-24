@@ -12,7 +12,7 @@ export const LoginSchema = z.object({
 export const RegisterSchema = z
   .object({
     email: z.string().email({
-      message: 'Email is required',
+      message: 'Valid email is required',
     }),
     password: z
       .string()
@@ -28,13 +28,13 @@ export const RegisterSchema = z
       .max(50, 'Password must be less than 50 characters'),
     firstName: z
       .string()
-      .min(2, { message: 'First Name must be at least 2 characyers' })
+      .min(2, { message: 'First Name must be at least 2 characters' })
       .max(45, { message: 'First Name must be less than 45 characters' })
       .regex(new RegExp('^[a-zA-Z]+$'), 'No special character allowed!'),
     lastName: z
       .string()
-      .min(2, { message: 'First Name must be at least 2 characyers' })
-      .max(45, { message: 'First Name must be less than 45 characters' })
+      .min(2, { message: 'Last Name must be at least 2 characters' })
+      .max(45, { message: 'Last Name must be less than 45 characters' })
       .regex(new RegExp('^[a-zA-Z]+$'), 'No special character allowed!'),
 
     agreedTerms: z.coerce.boolean().optional(),
