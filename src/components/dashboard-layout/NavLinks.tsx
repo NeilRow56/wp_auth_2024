@@ -5,6 +5,7 @@ import {
   Compass,
   Heart,
   Home,
+  LogOut,
   MessageCircle,
   PlusSquare,
   Search,
@@ -50,6 +51,11 @@ const links = [
     name: 'Settings',
     href: '/dashboard/settings',
     icon: Settings,
+  },
+  {
+    name: 'Sign Out',
+    href: '/api/auth/signout',
+    icon: LogOut,
   },
 ]
 
