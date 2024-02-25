@@ -12,9 +12,12 @@ const SigninButton = () => {
     <div className="flex items-center gap-2">
       {session && session.user ? (
         <>
-          {session && session.user.email}
+          <p className="text-xl text-primary">
+            {session && session.user.email}
+          </p>
+
           <Link
-            className="tex-sky-500 transition-colors hover:text-sky-600"
+            className="text-xl text-sky-500 transition-colors hover:text-sky-600"
             href={'/api/auth/signout'}
           >
             Sign Out
@@ -22,6 +25,7 @@ const SigninButton = () => {
         </>
       ) : (
         <div className="flex flex-col space-y-6">
+          <p>Already Have an account?</p>
           <Button onClick={() => signIn()}>Sign In</Button>
           <Button asChild variant="outline">
             <Link href={'/auth/sign-up'}>Sign Up</Link>

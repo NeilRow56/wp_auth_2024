@@ -30,15 +30,7 @@ export default function Home() {
 
           <div className="-col mx-auto mt-10 flex max-w-sm flex-col justify-center space-y-4">
             <div className="mx-auto flex flex-col space-y-4">
-              <p>Already Have an account?</p>
-
               <div className="mx-auto flex flex-col space-y-4">
-                {/* <Button asChild className="w-[120px]">
-                  <Link href="/auth/sign-up">Sign in</Link>
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link href="/auth/sign-up">Sign up</Link>
-                </Button> */}
                 <SigninButton />
               </div>
             </div>
