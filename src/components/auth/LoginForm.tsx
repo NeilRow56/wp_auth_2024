@@ -38,7 +38,6 @@ export const LoginForm = ({ callbackUrl }: LoginFormProps) => {
       password: '',
     },
   })
-  type InputType = z.infer<typeof LoginSchema>
 
   const onSubmit = async (data: z.infer<typeof LoginSchema>) => {
     const result = await signIn('credentials', {
@@ -46,12 +45,15 @@ export const LoginForm = ({ callbackUrl }: LoginFormProps) => {
       username: data.email,
       password: data.password,
     })
+
     if (!result?.ok) {
       toast.error(result?.error)
       return
     }
+    startTransition(() => {
+      router.push(callbackUrl ? callbackUrl : '/dashboard')
+    })
     toast.success('Welcome To WP Auth 2024')
-    router.push(callbackUrl ? callbackUrl : '/dashboard')
   }
 
   return (
