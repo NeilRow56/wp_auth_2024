@@ -1,9 +1,9 @@
 'use client'
 
-import { useForm, useWatch } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { useEffect, useState, useTransition } from 'react'
+import { useTransition } from 'react'
 import { toast } from 'sonner'
 // import { passwordStrength } from 'check-password-strength'
 import { Input } from '@/components/ui/input'
@@ -20,12 +20,12 @@ import { Button } from '../ui/button'
 
 import { CardWrapper } from './CardWrapper'
 import { RegisterSchema } from '@/schemas/auth'
-import { MailIcon } from 'lucide-react'
+import { Loader2, LogIn, MailIcon } from 'lucide-react'
 import { PasswordInput } from './PasswordInput'
 import { Checkbox } from '../ui/checkbox'
 import Link from 'next/link'
-import PasswordStrength from './PasswordStrength'
-import { registerUser } from '@/app/actions/auth-actions/register'
+
+import { register } from '@/app/actions/auth-actions/register'
 
 export const RegisterForm = () => {
   const [isPending, startTransition] = useTransition()
@@ -47,16 +47,22 @@ export const RegisterForm = () => {
   //     setPassStrength(passwordStrength(form.watch().password).id)
   //     // eslint-disable-next-line react-hooks/exhaustive-deps
   //   }, [form.watch().password])
+  const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
+    startTransition(() => {
+      register(values)
+        .then((data) => {
+          if (data?.error) {
+            form.reset()
+            toast.error(data.error)
+          }
 
-  const onSubmit = async (data: z.infer<typeof RegisterSchema>) => {
-    const { accepted, confirmPassword, ...user } = data
-    try {
-      const result = await registerUser(user)
-      toast.success('The User Registered Successfully.')
-    } catch (error) {
-      toast.error('Something Went Wrong!')
-      console.error(error)
-    }
+          if (data?.success) {
+            form.reset()
+            toast.success(data.success)
+          }
+        })
+        .catch(() => toast.error('Something went wrong'))
+    })
   }
 
   return (
@@ -129,7 +135,11 @@ export const RegisterForm = () => {
                 <FormItem>
                   <FormLabel className="flex w-full">Password</FormLabel>
                   <FormControl>
-                    <PasswordInput {...field} placeholder="" />
+                    <PasswordInput
+                      {...field}
+                      disabled={isPending}
+                      placeholder=""
+                    />
                   </FormControl>
 
                   <FormMessage />
@@ -187,8 +197,16 @@ export const RegisterForm = () => {
               )}
             />
           </div>
-          <Button disabled={isPending} type="submit" className="w-full">
-            Register
+          <Button type="submit" className="max-w-[150px]" disabled={isPending}>
+            {isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4" /> Processing
+              </>
+            ) : (
+              <>
+                <LogIn className="mr-2 h-4 w-4" /> Register
+              </>
+            )}
           </Button>
         </form>
       </Form>

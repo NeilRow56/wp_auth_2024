@@ -17,8 +17,20 @@ import { Button } from '../ui/button'
 
 import { CardWrapper } from './CardWrapper'
 import { LoginSchema } from '@/schemas/auth'
+import { PasswordInput } from './PasswordInput'
+import { Loader2, LogIn } from 'lucide-react'
+import { useTransition } from 'react'
+import { toast } from 'sonner'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
-export const LoginForm = () => {
+interface LoginFormProps {
+  callbackUrl?: string
+}
+
+export const LoginForm = ({ callbackUrl }: LoginFormProps) => {
+  const [isPending, startTransition] = useTransition()
+  const router = useRouter()
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -26,10 +38,22 @@ export const LoginForm = () => {
       password: '',
     },
   })
+  type InputType = z.infer<typeof LoginSchema>
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    console.log(values)
+  const onSubmit = async (data: z.infer<typeof LoginSchema>) => {
+    const result = await signIn('credentials', {
+      redirect: false,
+      username: data.email,
+      password: data.password,
+    })
+    if (!result?.ok) {
+      toast.error(result?.error)
+      return
+    }
+    toast.success('Welcome To WP Auth 2024')
+    router.push(callbackUrl ? callbackUrl : '/dashboard')
   }
+
   return (
     <CardWrapper
       headerLabel="Welcome back"
@@ -48,6 +72,7 @@ export const LoginForm = () => {
                   <FormControl>
                     <Input
                       {...field}
+                      disabled={isPending}
                       placeholder="john.doe@example.com"
                       type="email"
                     />
@@ -63,7 +88,11 @@ export const LoginForm = () => {
                 <FormItem>
                   <FormLabel className="flex w-full">Password</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="******" type="password" />
+                    <PasswordInput
+                      {...field}
+                      disabled={isPending}
+                      placeholder="Password"
+                    />
                   </FormControl>
 
                   <FormMessage />
@@ -71,8 +100,16 @@ export const LoginForm = () => {
               )}
             />
           </div>
-          <Button type="submit" className="w-full">
-            Login
+          <Button type="submit" className="max-w-[150px]" disabled={isPending}>
+            {isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4" /> Processing
+              </>
+            ) : (
+              <>
+                <LogIn className="mr-2 h-4 w-4" /> Login
+              </>
+            )}
           </Button>
         </form>
       </Form>

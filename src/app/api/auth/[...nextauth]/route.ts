@@ -6,6 +6,10 @@ import { db } from '@/lib/db'
 import { User } from '@prisma/client'
 
 export const authOptions: AuthOptions = {
+  pages: {
+    signIn: '/auth/sign-in',
+  },
+
   providers: [
     CredentialsProvider({
       name: 'Credentials',
