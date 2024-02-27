@@ -110,6 +110,15 @@ model ActivateToken {
     
 }
 
+model VerificationToken {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  email      String
+  token      String @unique
+  expires    DateTime
+
+  @@unique([email, token])
+}
+
 model Session {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
   sessionToken String   @unique

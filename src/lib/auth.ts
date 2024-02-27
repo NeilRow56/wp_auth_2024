@@ -3,6 +3,9 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import bcryptjs from 'bcryptjs'
 import { db } from '@/lib/db'
 import { User } from '@prisma/client'
+import { getVerificationTokenByEmail } from '@/data/verification-token'
+import { generateVerificationToken } from './tokens'
+import { getUserById } from '@/data/user'
 
 export const authOptions: NextAuthOptions = {
   pages: {
@@ -43,8 +46,16 @@ export const authOptions: NextAuthOptions = {
         if (!isPassowrdCorrect)
           throw new Error('User name or password is not correct')
 
-        if (!user.emailVerified)
-          throw new Error('Please verify your email first!')
+        const existingToken = await getVerificationTokenByEmail(
+          credentials.username
+        )
+
+        // if (!user.emailVerified) {
+        //   const verificationToken = await generateVerificationToken(user.email)
+        // }
+
+        // if (!user.emailVerified)
+        //   throw new Error('Email sent - please activate to enable login!')
 
         const { password, ...userWithoutPass } = user
         return userWithoutPass
@@ -53,6 +64,16 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider !== 'credentials') return true
+
+      const existingUser = await getUserById(user.id)
+      // Prevent sign in without email verification
+      if (!existingUser?.emailVerified) return false
+
+      return true
+    },
+
     async jwt({ token, user }) {
       if (user) token.user = user as User
       return token

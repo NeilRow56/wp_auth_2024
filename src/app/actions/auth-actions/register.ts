@@ -8,8 +8,9 @@ import { db } from '@/lib/db'
 
 import { RegisterSchema } from '@/schemas/auth'
 import { getUserByEmail } from '@/data/user'
-import { compileActivationTemplate, sendMail } from '@/lib/mail'
-import { signJwt, verifyJwt } from '@/lib/jwt'
+import { generateVerificationToken } from '@/lib/tokens'
+// import { compileActivationTemplate, sendMail } from '@/lib/mail'
+// import { signJwt, verifyJwt } from '@/lib/jwt'
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
   const validatedFields = RegisterSchema.safeParse(values)
@@ -41,39 +42,41 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
 
   //TODO send verification token email
 
-  const user = await getUserByEmail(email)
+  const verificationToken = await generateVerificationToken(email)
 
-  const jwtUserId = signJwt({
-    id: user?.id,
-  })
-  const activationUrl = `${process.env.NEXTAUTH_URL}/auth/activation/${jwtUserId}`
-  const body = compileActivationTemplate(firstName, activationUrl)
-  await sendMail({ to: email, subject: 'Activate Your Account', body })
+  //   const user = await getUserByEmail(email)
 
+  //   const jwtUserId = signJwt({
+  //     id: user?.id,
+  //   })
+  //   const activationUrl = `${process.env.NEXTAUTH_URL}/auth/activation/${jwtUserId}`
+  //   const body = compileActivationTemplate(firstName, activationUrl)
+  //   await sendMail({ to: email, subject: 'Activate Your Account', body })
+
+  //   return { success: 'Confirmation email sent!' }
+  // }
+
+  // type ActivateUserFunc = (
+  //   jwtUserId: string
+  // ) => Promise<'userNotExist' | 'alreadyActivated' | 'success'>
+
+  // export const activateUser: ActivateUserFunc = async (jwtUserID) => {
+  //   const payload = verifyJwt(jwtUserID)
+  //   const userId = payload?.id
+  //   const user = await db.user.findUnique({
+  //     where: {
+  //       id: userId,
+  //     },
+  //   })
+  //   if (!user) return 'userNotExist'
+  //   if (user.emailVerified) return 'alreadyActivated'
+  //   const result = await db.user.update({
+  //     where: {
+  //       id: userId,
+  //     },
+  //     data: {
+  //       emailVerified: new Date(),
+  //     },
+  //   })
   return { success: 'Confirmation email sent!' }
-}
-
-type ActivateUserFunc = (
-  jwtUserId: string
-) => Promise<'userNotExist' | 'alreadyActivated' | 'success'>
-
-export const activateUser: ActivateUserFunc = async (jwtUserID) => {
-  const payload = verifyJwt(jwtUserID)
-  const userId = payload?.id
-  const user = await db.user.findUnique({
-    where: {
-      id: userId,
-    },
-  })
-  if (!user) return 'userNotExist'
-  if (user.emailVerified) return 'alreadyActivated'
-  const result = await db.user.update({
-    where: {
-      id: userId,
-    },
-    data: {
-      emailVerified: new Date(),
-    },
-  })
-  return 'success'
 }
