@@ -3,6 +3,7 @@ const nextConfig = {
   experimental: {
     serverActions: true,
   },
+
   compress: true,
   // eslint: {
   // //   Warning: This allows production builds to successfully complete even if
@@ -12,19 +13,19 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "img.clerk.com",
+        protocol: 'https',
+        hostname: 'img.clerk.com',
       },
       {
-        protocol: "https",
-        hostname: "images.unsplash.com",
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
       },
       {
-        protocol: "https",
-        hostname: "files.edgestore.dev",
+        protocol: 'https',
+        hostname: 'files.edgestore.dev',
       },
     ],
   },
-};
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig

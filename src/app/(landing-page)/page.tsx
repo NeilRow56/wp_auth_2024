@@ -1,13 +1,13 @@
 import SigninButton from '@/components/auth/SigninButton'
-import { Button } from '@/components/ui/button'
+import { sendMail } from '@/lib/mail'
 
-import Link from 'next/link'
-import { redirect } from 'next/navigation'
+export default async function Home() {
+  await sendMail({
+    to: 'neilrowland56@icloud.com',
+    subject: 'test email sending',
+    body: 'Testing email - sending from gmail',
+  })
 
-export default function Home() {
-  // const { userId } = auth()
-
-  // if (userId) redirect('/dashboard')
   return (
     <section className="flex h-screen items-center justify-center bg-background">
       <div className="relative mx-auto w-full max-w-7xl items-center px-5 py-12 md:px-12 lg:px-16">
